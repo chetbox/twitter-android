@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,20 +23,14 @@ import com.twitter.sdk.android.tweetui.TimelineResult;
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 import com.twitter.sdk.android.tweetui.UserTimeline;
 
-import java.util.List;
-
-import twitter4j.Status;
-import twitter4j.TwitterFactory;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
-
-
 public class TweetListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     private ListView tweetList;
     private SwipeRefreshLayout swipeRefresh;
     private TweetTimelineListAdapter timelineAdapter;
     private Button composeButton;
+
+    private static final int COMPOSE_REQ_CODE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +45,6 @@ public class TweetListActivity extends AppCompatActivity implements SwipeRefresh
 
         setTitle(session.getUserName());
 
-        UserTimeline userTimeline = new UserTimeline.Builder()
-                .screenName(session.getUserName())
-                .build();
         timelineAdapter = new TweetTimelineListAdapter(this, new HomeTimeline(this));
         tweetList.setAdapter(timelineAdapter);
 
@@ -61,7 +53,8 @@ public class TweetListActivity extends AppCompatActivity implements SwipeRefresh
         composeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new TweetComposer.Builder(TweetListActivity.this).show();
+                Intent composeIntent = new TweetComposer.Builder(TweetListActivity.this).createIntent();
+                startActivityForResult(composeIntent, COMPOSE_REQ_CODE);
             }
         });
 
@@ -103,5 +96,29 @@ public class TweetListActivity extends AppCompatActivity implements SwipeRefresh
                 Toast.makeText(TweetListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == COMPOSE_REQ_CODE && resultCode == RESULT_OK) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // TODO: Fix race condition. Should check that tweet has been successfully sent.
+                    // (TweetComposer posts tweets asynchronously)
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException _) {}
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            onRefresh();
+                        }
+                    });
+                }
+            }).start();
+        }
     }
 }
