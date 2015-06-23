@@ -10,8 +10,8 @@ import io.fabric.sdk.android.Fabric;
 public class TwitterApplication extends Application {
 
     // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
-    private static final String TWITTER_KEY = "TWITTER_KEY";
-    private static final String TWITTER_SECRET = "TWITTER_SECRET";
+    public static final String TWITTER_KEY = "TWITTER_KEY";
+    public static final String TWITTER_SECRET = "TWITTER_SECRET";
 
     @Override
     public void onCreate() {

@@ -40,4 +40,5 @@ dependencies {
     compile('com.twitter.sdk.android:twitter:1.6.0@aar') {
         transitive = true;
     }
+    compile 'org.twitter4j:twitter4j-core:4.0.3'
 }

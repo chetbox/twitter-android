@@ -15,11 +15,19 @@ import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.twitter.sdk.android.tweetui.TimelineResult;
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 import com.twitter.sdk.android.tweetui.UserTimeline;
+
+import java.util.List;
+
+import twitter4j.Status;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
 
 
 public class TweetListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -38,14 +46,14 @@ public class TweetListActivity extends AppCompatActivity implements SwipeRefresh
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         composeButton = (Button) findViewById(R.id.compose);
 
-        String username = Twitter.getSessionManager().getActiveSession().getUserName();
+        TwitterSession session = Twitter.getSessionManager().getActiveSession();
 
-        setTitle(username);
+        setTitle(session.getUserName());
 
         UserTimeline userTimeline = new UserTimeline.Builder()
-                .screenName(username)
+                .screenName(session.getUserName())
                 .build();
-        timelineAdapter = new TweetTimelineListAdapter(this, userTimeline);
+        timelineAdapter = new TweetTimelineListAdapter(this, new HomeTimeline(this));
         tweetList.setAdapter(timelineAdapter);
 
         swipeRefresh.setOnRefreshListener(this);
@@ -56,6 +64,7 @@ public class TweetListActivity extends AppCompatActivity implements SwipeRefresh
                 new TweetComposer.Builder(TweetListActivity.this).show();
             }
         });
+
     }
 
     @Override
