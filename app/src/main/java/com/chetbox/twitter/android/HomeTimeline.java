@@ -96,12 +96,8 @@ public class HomeTimeline implements Timeline<Tweet> {
 
             mCallback.success(new Result<>(
                     new TimelineResult<>(new TimelineCursor(minPosition, maxPosition), tweets),
-                    dummyResponse()));
+                    null));
         }
-    }
-
-    private static Response dummyResponse() {
-        return new Response("https://twitter.com", 200, "OK", new ArrayList<Header>(), null);
     }
 
     private Tweet toTwitterKitTweet(Status tweet) {
