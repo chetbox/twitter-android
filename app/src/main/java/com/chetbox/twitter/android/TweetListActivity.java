@@ -17,7 +17,6 @@ import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.Tweet;
-import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.twitter.sdk.android.tweetui.TimelineResult;
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 
@@ -49,11 +48,10 @@ public class TweetListActivity extends AppCompatActivity implements SwipeRefresh
         composeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent composeIntent = new TweetComposer.Builder(TweetListActivity.this).createIntent();
+                Intent composeIntent = new Intent(TweetListActivity.this, ComposeTweetActivity.class);
                 startActivityForResult(composeIntent, COMPOSE_REQ_CODE);
             }
         });
-
     }
 
     @Override
@@ -99,10 +97,17 @@ public class TweetListActivity extends AppCompatActivity implements SwipeRefresh
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == COMPOSE_REQ_CODE && resultCode == RESULT_OK) {
+            String updateText = data.getStringExtra(ComposeTweetActivity.UPDATE_TEXT);
+
+            // update Twitter
+            new UpdateStatusTask(updateText).execute();
+
+            // TODO: update the local UI rather than waiting for it to appear on Twitter
+            // (which is a race condition)
+
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    // TODO: Fix race condition. Should check that tweet has been successfully sent.
                     // (TweetComposer posts tweets asynchronously)
                     try {
                         Thread.sleep(2000);

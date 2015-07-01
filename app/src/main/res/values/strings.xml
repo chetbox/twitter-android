@@ -2,4 +2,6 @@
     <string name="app_name">Twitter</string>
     <string name="compose">New tweet</string>
     <string name="action_logout">Logout</string>
+    <string name="update_status">Tweet</string>
+    <string name="update_hint">What\'s happening?</string>
 </resources>
