@@ -26,6 +26,7 @@ public class TweetListActivity extends AppCompatActivity implements SwipeRefresh
     private TweetTimelineListAdapter mTimelineAdapter;
 
     private static final int COMPOSE_REQ_CODE = 10;
+    private static final int MAX_TWEETS_TO_SHOW = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class TweetListActivity extends AppCompatActivity implements SwipeRefresh
 
         setTitle(session.getUserName());
 
-        mTimelineAdapter = new TweetTimelineListAdapter(this, new HomeTimeline());
+        mTimelineAdapter = new LimitedTweetTimelineListAdapter(this, new HomeTimeline(), MAX_TWEETS_TO_SHOW);
         tweetList.setAdapter(mTimelineAdapter);
 
         mSwipeRefresh.setOnRefreshListener(this);
