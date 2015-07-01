@@ -1,6 +1,5 @@
 package com.chetbox.twitter.android;
 
-import android.content.Context;
 import android.os.AsyncTask;
 
 import com.google.gson.Gson;
@@ -30,15 +29,10 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class HomeTimeline implements Timeline<Tweet> {
 
-    private static final SimpleDateFormat DATE_TIME_RFC822 = new SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy", Locale.ENGLISH);
-
     private final twitter4j.Twitter mTwitter;
-    private final Context mContext;
     private final Gson mGson = new Gson();
 
-    public HomeTimeline(Context context) {
-        mContext = context;
-
+    public HomeTimeline() {
         TwitterSession session = Twitter.getSessionManager().getActiveSession();
 
         Configuration twitterConfig = new ConfigurationBuilder()

@@ -3,8 +3,6 @@ package com.chetbox.twitter.android;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.twitter.sdk.android.core.Callback;
@@ -16,15 +14,15 @@ import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private TwitterLoginButton loginButton;
+    private TwitterLoginButton mLoginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_twitter_login);
 
-        loginButton = (TwitterLoginButton) findViewById(R.id.login_button);
-        loginButton.setCallback(new Callback<TwitterSession>() {
+        mLoginButton = (TwitterLoginButton) findViewById(R.id.login_button);
+        mLoginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
                 // TODO: store result somewhere?
@@ -50,7 +48,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        loginButton.onActivityResult(requestCode, resultCode, data);
+        mLoginButton.onActivityResult(requestCode, resultCode, data);
     }
 
 }

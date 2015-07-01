@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,14 +20,11 @@ import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.twitter.sdk.android.tweetui.TimelineResult;
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
-import com.twitter.sdk.android.tweetui.UserTimeline;
 
 public class TweetListActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
-    private ListView tweetList;
-    private SwipeRefreshLayout swipeRefresh;
-    private TweetTimelineListAdapter timelineAdapter;
-    private Button composeButton;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private TweetTimelineListAdapter mTimelineAdapter;
 
     private static final int COMPOSE_REQ_CODE = 10;
 
@@ -37,18 +33,18 @@ public class TweetListActivity extends AppCompatActivity implements SwipeRefresh
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tweet_list);
 
-        tweetList = (ListView) findViewById(android.R.id.list);
-        swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
-        composeButton = (Button) findViewById(R.id.compose);
+        mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        ListView tweetList = (ListView) findViewById(android.R.id.list);
+        Button composeButton = (Button) findViewById(R.id.compose);
 
         TwitterSession session = Twitter.getSessionManager().getActiveSession();
 
         setTitle(session.getUserName());
 
-        timelineAdapter = new TweetTimelineListAdapter(this, new HomeTimeline(this));
-        tweetList.setAdapter(timelineAdapter);
+        mTimelineAdapter = new TweetTimelineListAdapter(this, new HomeTimeline());
+        tweetList.setAdapter(mTimelineAdapter);
 
-        swipeRefresh.setOnRefreshListener(this);
+        mSwipeRefresh.setOnRefreshListener(this);
 
         composeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,16 +79,16 @@ public class TweetListActivity extends AppCompatActivity implements SwipeRefresh
 
     @Override
     public void onRefresh() {
-        swipeRefresh.setRefreshing(true);
-        timelineAdapter.refresh(new Callback<TimelineResult<Tweet>>() {
+        mSwipeRefresh.setRefreshing(true);
+        mTimelineAdapter.refresh(new Callback<TimelineResult<Tweet>>() {
             @Override
             public void success(Result result) {
-                swipeRefresh.setRefreshing(false);
+                mSwipeRefresh.setRefreshing(false);
             }
 
             @Override
             public void failure(TwitterException e) {
-                swipeRefresh.setRefreshing(false);
+                mSwipeRefresh.setRefreshing(false);
                 Toast.makeText(TweetListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
